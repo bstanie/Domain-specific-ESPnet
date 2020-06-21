@@ -48,8 +48,8 @@ raw_data_folder = Path(eg_dir, 'raw_data')
 
 def get_datasets_from_name(dataset_names):
     dataset_names = [name.replace("train_", "").replace("test_", "") for name in dataset_names]
-    datasets = [dataset for dataset in DATASET_FACTORY if
-                dataset.name in dataset_names]
+    datasets = set([dataset for dataset in DATASET_FACTORY if
+                    dataset.name in dataset_names])
     return datasets
 
 
