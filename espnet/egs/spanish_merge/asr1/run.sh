@@ -66,8 +66,10 @@ set -e
 set -u
 set -o pipefail
 
-datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
-          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
+#datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
+#          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
+
+datasets='train_mailabs test_mailabs test_gong train_gong'
 
 train_set='train'
 train_dev='dev'
@@ -78,7 +80,7 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
    printf "\n\n"
    echo "STAGE 0: Data download and preparation"
 
-    ./local/data_preparation.sh
+    ./local/data_preparation.sh datasets
 
     for part in ${datasets}; do
         # use underscore-separated names in data directories.

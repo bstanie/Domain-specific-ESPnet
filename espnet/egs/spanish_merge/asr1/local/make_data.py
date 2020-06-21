@@ -13,6 +13,7 @@ from dataset_utils.transformers.spanish_common_voice import CommonVoiceKaldiTran
 from dataset_utils.transformers.spanish_tedx import TEDxSpanish2KaldiTransformer
 from dataset_utils.transformers.spanish_crowdsource_openasr import CrowdsourcedOpenASR
 from collections import namedtuple
+import argparse
 
 DataSet = namedtuple('DataSet', ['name', 'urls', 'transformer_class'])
 
@@ -45,8 +46,8 @@ eg_dir = Path('/espnet/egs/spanish_merge/asr1')
 raw_data_folder = Path(eg_dir, 'raw_data')
 
 
-def prepare_public_data_factory(datasets: List[DataSet]):
-    for dataset in datasets:
+def prepare_public_data_factory(args):
+    for dataset in args:
         logger.info(f"\n\nDownloading and extracting data for '{dataset.name}' dataset\n\n")
 
         if dataset.name == 'kaggle_120h':
@@ -70,7 +71,7 @@ def prepare_public_data_factory(datasets: List[DataSet]):
             espnet_kaldi_eg_directory=eg_dir)
 
 
-def prepare_gong_data():
+def prepare_gong_data(args):
     logger.info(f"\n\nDownloading and extracting data for 'Gongio' datasets\n\n")
     dataset_location = download_from_s3(key='to-y-data',
                                         bucket='gong-shared-with-y-data',
@@ -87,5 +88,6 @@ def prepare_gong_data():
 
 
 if __name__ == '__main__':
-    prepare_public_data_factory(datasets)
-    prepare_gong_data()
+    args = argparse.ArgumentParser()
+    prepare_public_data_factory(args)
+    prepare_gong_data(args)
