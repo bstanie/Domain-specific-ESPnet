@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd "$(dirname "$0")"
-#pip install -r requirements.txt
+pip install -r requirements.txt
 
 #add-apt-repository ppa:mc3man/trusty-media
 #apt-get -y update
