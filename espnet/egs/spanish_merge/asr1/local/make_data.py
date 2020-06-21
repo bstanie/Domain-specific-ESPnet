@@ -47,7 +47,7 @@ raw_data_folder = Path(eg_dir, 'raw_data')
 
 
 def prepare_public_data_factory(args):
-    print(args)
+    logger.info(args)
     for dataset in args:
         logger.info(f"\n\nDownloading and extracting data for '{dataset.name}' dataset\n\n")
 
