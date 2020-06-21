@@ -89,7 +89,7 @@ def prepare_gong_data(args):
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser().parse_args()
-    print("ASDDDDDDDDDDDDDDD")
-    print(args)
+    logger.info("ASDDDDDDDDDDDDDDD")
+    logger.info(args)
     prepare_public_data_factory(args)
     # prepare_gong_data(args)
