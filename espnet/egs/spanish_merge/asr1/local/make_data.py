@@ -21,14 +21,14 @@ logger = logging.root
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
 
-datasets = [
-    ('Mailabs', ['http://www.caito.de/data/Training/stt_tts/es_ES.tgz'], MailabsKaldiTransformer()),
-    ('CommonVoiceSpanish', [
+dataset_mapping = [
+    ('mailabs', ['http://www.caito.de/data/Training/stt_tts/es_ES.tgz'], MailabsKaldiTransformer()),
+    ('comvoice', [
         'https://voice-prod-bundler-ee1969a6ce8178826482b88e843c335139bd3fb4.s3.amazonaws.com/cv-corpus-4-2019-12-10/es.tar.gz'],
      CommonVoiceKaldiTransformer()),
-    ('TEDxSpanish', ['http://www.openslr.org/resources/67/tedx_spanish_corpus.tgz'],
+    ('tedx', ['http://www.openslr.org/resources/67/tedx_spanish_corpus.tgz'],
      TEDxSpanish2KaldiTransformer()),
-    ('Crowdsource', ['http://www.openslr.org/resources/71/es_cl_female.zip',
+    ('crowdsource', ['http://www.openslr.org/resources/71/es_cl_female.zip',
                      'http://www.openslr.org/resources/71/es_cl_male.zip',
                      'http://www.openslr.org/resources/72/es_co_female.zip',
                      'http://www.openslr.org/resources/72/es_co_male.zip',
@@ -41,13 +41,19 @@ datasets = [
                      ], CrowdsourcedOpenASR()),
     # ('kaggle_120h', None, Kaggle120hSpanish2KaldiTransformer())
 ]
-datasets = [DataSet(_[0], _[1], _[2]) for _ in datasets]
+DATASET_FACTORY = [DataSet(_[0], _[1], _[2]) for _ in dataset_mapping]
 eg_dir = Path('/espnet/egs/spanish_merge/asr1')
 raw_data_folder = Path(eg_dir, 'raw_data')
 
+def get_datasets_from_name(dataset_names):
+    dataset_names = [name.replace("train_", "").replace("test_", "") for name in dataset_names]
+    datasets = [dataset for dataset in DATASET_FACTORY if
+                dataset.name in dataset_names]
+    return datasets
 
-def prepare_public_data_factory(args):
-    for dataset in args:
+def prepare_public_data_factory(dataset_names: List[str]):
+    datasets = get_datasets_from_name(dataset_names)
+    for dataset in datasets:
         logger.info(f"\n\nDownloading and extracting data for '{dataset.name}' dataset\n\n")
 
         if dataset.name == 'kaggle_120h':
@@ -71,7 +77,7 @@ def prepare_public_data_factory(args):
             espnet_kaldi_eg_directory=eg_dir)
 
 
-def prepare_gong_data(args):
+def prepare_gong_data():
     logger.info(f"\n\nDownloading and extracting data for 'Gongio' datasets\n\n")
     dataset_location = download_from_s3(key='to-y-data',
                                         bucket='gong-shared-with-y-data',
@@ -88,8 +94,9 @@ def prepare_gong_data(args):
 
 
 if __name__ == '__main__':
-    args = argparse.ArgumentParser().parse_args()
-    logger.info("ASDDDDDDDDDDDDDDD")
-    logger.info(args)
-    prepare_public_data_factory(args)
-    # prepare_gong_data(args)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--datasets', default=[])
+    args = parser.parse_args()
+    _datasets = args.datasets.split()
+    prepare_public_data_factory(_datasets)
+    prepare_gong_data()
