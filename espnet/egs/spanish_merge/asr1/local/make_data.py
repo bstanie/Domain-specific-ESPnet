@@ -47,9 +47,9 @@ raw_data_folder = Path(eg_dir, 'raw_data')
 
 
 def get_datasets_from_name(dataset_names):
-    dataset_names = [name.replace("train_", "").replace("test_", "") for name in dataset_names]
-    datasets = set([dataset for dataset in DATASET_FACTORY if
-                    dataset.name in dataset_names])
+    dataset_names = set([name.replace("train_", "").replace("test_", "") for name in dataset_names])
+    datasets = [dataset for dataset in DATASET_FACTORY if
+                    dataset.name in dataset_names]
     return datasets
 
 
@@ -97,8 +97,8 @@ def prepare_gong_data():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--datasets', default=[])
+    parser.add_argument('--datasets', nargs='*')
     args = parser.parse_args()
-    _datasets = args.datasets.split()
+    _datasets = args.datasets
     prepare_public_data_factory(_datasets)
     prepare_gong_data()
