@@ -45,11 +45,13 @@ DATASET_FACTORY = [DataSet(_[0], _[1], _[2]) for _ in dataset_mapping]
 eg_dir = Path('/espnet/egs/spanish_merge/asr1')
 raw_data_folder = Path(eg_dir, 'raw_data')
 
+
 def get_datasets_from_name(dataset_names):
     dataset_names = [name.replace("train_", "").replace("test_", "") for name in dataset_names]
     datasets = [dataset for dataset in DATASET_FACTORY if
                 dataset.name in dataset_names]
     return datasets
+
 
 def prepare_public_data_factory(dataset_names: List[str]):
     datasets = get_datasets_from_name(dataset_names)
