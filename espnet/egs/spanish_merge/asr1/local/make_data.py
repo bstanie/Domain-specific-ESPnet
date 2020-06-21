@@ -47,6 +47,7 @@ raw_data_folder = Path(eg_dir, 'raw_data')
 
 
 def prepare_public_data_factory(args):
+    print(args)
     for dataset in args:
         logger.info(f"\n\nDownloading and extracting data for '{dataset.name}' dataset\n\n")
 
@@ -88,6 +89,6 @@ def prepare_gong_data(args):
 
 
 if __name__ == '__main__':
-    args = argparse.ArgumentParser()
+    args = argparse.ArgumentParser().parse_args()
     prepare_public_data_factory(args)
-    prepare_gong_data(args)
+    # prepare_gong_data(args)
