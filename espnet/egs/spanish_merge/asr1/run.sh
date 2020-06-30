@@ -52,7 +52,7 @@ datadir=/export/a15/vpanayotov/data
 data_url=www.openslr.org/resources/12
 
 # bpemode (unigram or bpe)
-nbpe=3000
+nbpe=5000
 bpemode=unigram
 
 # exp tag
@@ -69,7 +69,7 @@ set -o pipefail
 #datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
 #          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
-datasets='train_crowdsource test_crowdsource test_gong train_gong'
+datasets='train_comvoice test_comvoice test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
 train_set='train'
 train_dev='dev'
@@ -99,8 +99,8 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     fbankdir=fbank
 
     # select datasets for train, dev, test. You can choose any dataset from "datasets" variable which was preprocessed earlier
-    utils/combine_data.sh  data/${train_set}_org data/train_crowdsource
-    utils/combine_data.sh  data/${train_dev}_org data/test_crowdsource
+    utils/combine_data.sh  data/${train_set}_org data/train_comvoice data/train_gong_unsupervised data/test_gong_unsupervised
+    utils/combine_data.sh  data/${train_dev}_org data/test_comvoice
     utils/combine_data.sh  data/${recog_set}_org data/train_gong data/test_gong
 
     # Generate the fbank features; by default 80-dimensional fbanks with pitch on each frame
