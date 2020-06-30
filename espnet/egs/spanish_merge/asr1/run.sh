@@ -69,7 +69,7 @@ set -o pipefail
 #datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
 #          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
-datasets='train_comvoice test_comvoice test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
+datasets='test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
 train_set='train'
 train_dev='dev'
