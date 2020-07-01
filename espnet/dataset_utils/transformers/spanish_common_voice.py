@@ -41,7 +41,7 @@ class CommonVoiceKaldiTransformer(AbstractDataTransformer):
             data = data[:self.SUBSET_SIZE]
 
         destination_audio_dir = os.path.join(kaldi_audio_files_dir, self.prefix)
-        # self.transform_audio(origin_audiofiles_dir, destination_audio_dir, data, force_transform_audio)
+        self.transform_audio(origin_audiofiles_dir, destination_audio_dir, data, force_transform_audio)
 
         logger.info("Generating train and test files")
 
