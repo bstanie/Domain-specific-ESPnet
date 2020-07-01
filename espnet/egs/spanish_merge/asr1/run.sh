@@ -66,10 +66,10 @@ set -e
 set -u
 set -o pipefail
 
-#datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
-#          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
+datasets='train_mailabs test_mailabs train_crowdsource test_crowdsource train_tedx test_tedx train_comvoice test_comvoice
+          test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
-datasets='test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
+#datasets='test_gong train_gong test_gong_unsupervised train_gong_unsupervised'
 
 train_set='train'
 train_dev='dev'
@@ -99,7 +99,9 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     fbankdir=fbank
 
     # select datasets for train, dev, test. You can choose any dataset from "datasets" variable which was preprocessed earlier
-    utils/combine_data.sh  data/${train_set}_org data/train_gong_unsupervised data/test_gong_unsupervised
+    utils/combine_data.sh  data/${train_set}_org data/train_mailabs data/test_mailabs data/train_crowdsource data/test_crowdsource \
+                                                  data/train_tedx data/test_tedx data/train_comvoice data/test_comvoice \
+                                                  data/train_gong_unsupervised
     utils/combine_data.sh  data/${train_dev}_org data/test_gong_unsupervised
     utils/combine_data.sh  data/${recog_set}_org data/train_gong data/test_gong
 
@@ -302,7 +304,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
             --recog-json ${feat_recog_dir}/split${nj}utt/data_${bpemode}${nbpe}.JOB.json \
             --result-label ${expdir}/${decode_dir}/data.JOB.json \
             --model ${expdir}/results/${recog_model}  \
-#            --rnnlm ${lmexpdir}/${lang_model} \
+            --rnnlm ${lmexpdir}/${lang_model} \
             --api v2
 
         score_sclite.sh --bpe ${nbpe} --bpemodel ${bpemodel}.model --wer true ${expdir}/${decode_dir} ${dict}
