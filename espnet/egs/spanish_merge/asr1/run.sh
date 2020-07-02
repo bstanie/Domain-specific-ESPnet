@@ -99,8 +99,8 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     fbankdir=fbank
 
     # select datasets for train, dev, test. You can choose any dataset from "datasets" variable which was preprocessed earlier
-    utils/combine_data.sh  data/${train_set}_org data/train_comvoice
-    utils/combine_data.sh  data/${train_dev}_org data/test_comvoice
+    utils/combine_data.sh  data/${train_set}_org data/test_gong_unsupervised data/train_gong_unsupervised
+    utils/combine_data.sh  data/${train_dev}_org data/test_gong_unsupervised
     utils/combine_data.sh  data/${recog_set}_org data/train_gong data/test_gong
 
     # Generate the fbank features; by default 80-dimensional fbanks with pitch on each frame
@@ -221,26 +221,26 @@ else
 fi
 expdir=exp/${expname}
 mkdir -p ${expdir}
-
-if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
-    echo "stage 4: Network Training"
-    ${cuda_cmd} --gpu ${ngpu} ${expdir}/train.log \
-        asr_train.py \
-        --config ${train_config} \
-        --preprocess-conf ${preprocess_config} \
-        --ngpu ${ngpu} \
-        --backend ${backend} \
-        --outdir ${expdir}/results \
-        --tensorboard-dir tensorboard/${expname} \
-        --debugmode ${debugmode} \
-        --dict ${dict} \
-        --debugdir ${expdir} \
-        --minibatches ${N} \
-        --verbose ${verbose} \
-        --resume ${resume} \
-        --train-json ${feat_tr_dir}/data_${bpemode}${nbpe}.json \
-        --valid-json ${feat_dt_dir}/data_${bpemode}${nbpe}.json
-fi
+#
+#if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
+#    echo "stage 4: Network Training"
+#    ${cuda_cmd} --gpu ${ngpu} ${expdir}/train.log \
+#        asr_train.py \
+#        --config ${train_config} \
+#        --preprocess-conf ${preprocess_config} \
+#        --ngpu ${ngpu} \
+#        --backend ${backend} \
+#        --outdir ${expdir}/results \
+#        --tensorboard-dir tensorboard/${expname} \
+#        --debugmode ${debugmode} \
+#        --dict ${dict} \
+#        --debugdir ${expdir} \
+#        --minibatches ${N} \
+#        --verbose ${verbose} \
+#        --resume ${resume} \
+#        --train-json ${feat_tr_dir}/data_${bpemode}${nbpe}.json \
+#        --valid-json ${feat_dt_dir}/data_${bpemode}${nbpe}.json
+#fi
 
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
     echo "stage 5: Decoding"
