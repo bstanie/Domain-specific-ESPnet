@@ -99,9 +99,9 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     fbankdir=fbank
 
     # select datasets for train, dev, test. You can choose any dataset from "datasets" variable which was preprocessed earlier
-    utils/combine_data.sh  data/${train_set}_org data/test_gong_unsupervised data/train_gong_unsupervised
-    utils/combine_data.sh  data/${train_dev}_org data/test_gong_unsupervised
-    utils/combine_data.sh  data/${recog_set}_org data/train_gong data/test_gong
+    utils/combine_data.sh  data/${train_set}_org data/test_gong_unsupervised data/train_gong_unsupervised data/train_gong
+    utils/combine_data.sh  data/${train_dev}_org data/train_gong
+    utils/combine_data.sh  data/${recog_set}_org data/test_gong
 
     # Generate the fbank features; by default 80-dimensional fbanks with pitch on each frame
     for x in ${train_set} ${train_dev} ${recog_set}; do
@@ -154,7 +154,7 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     mkdir -p data/lang_char/
     echo "<unk> 1" > ${dict} # <unk> must be 1, 0 will be used for "blank" in CTC
     cut -f 2- -d" " data/${train_set}/text > data/lang_char/input.txt
-#    spm_train --input=data/lang_char/input.txt --vocab_size=${nbpe} --model_type=${bpemode} --model_prefix=${bpemodel} --input_sentence_size=100000000
+    spm_train --input=data/lang_char/input.txt --vocab_size=${nbpe} --model_type=${bpemode} --model_prefix=${bpemodel} --input_sentence_size=100000000
     spm_encode --model=${bpemodel}.model --output_format=piece < data/lang_char/input.txt | tr ' ' '\n' | sort | uniq | awk '{print $0 " " NR+1}' >> ${dict}
     wc -l ${dict}
 
@@ -221,26 +221,26 @@ else
 fi
 expdir=exp/${expname}
 mkdir -p ${expdir}
-#
-#if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
-#    echo "stage 4: Network Training"
-#    ${cuda_cmd} --gpu ${ngpu} ${expdir}/train.log \
-#        asr_train.py \
-#        --config ${train_config} \
-#        --preprocess-conf ${preprocess_config} \
-#        --ngpu ${ngpu} \
-#        --backend ${backend} \
-#        --outdir ${expdir}/results \
-#        --tensorboard-dir tensorboard/${expname} \
-#        --debugmode ${debugmode} \
-#        --dict ${dict} \
-#        --debugdir ${expdir} \
-#        --minibatches ${N} \
-#        --verbose ${verbose} \
-#        --resume ${resume} \
-#        --train-json ${feat_tr_dir}/data_${bpemode}${nbpe}.json \
-#        --valid-json ${feat_dt_dir}/data_${bpemode}${nbpe}.json
-#fi
+
+if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
+    echo "stage 4: Network Training"
+    ${cuda_cmd} --gpu ${ngpu} ${expdir}/train.log \
+        asr_train.py \
+        --config ${train_config} \
+        --preprocess-conf ${preprocess_config} \
+        --ngpu ${ngpu} \
+        --backend ${backend} \
+        --outdir ${expdir}/results \
+        --tensorboard-dir tensorboard/${expname} \
+        --debugmode ${debugmode} \
+        --dict ${dict} \
+        --debugdir ${expdir} \
+        --minibatches ${N} \
+        --verbose ${verbose} \
+        --resume ${resume} \
+        --train-json ${feat_tr_dir}/data_${bpemode}${nbpe}.json \
+        --valid-json ${feat_dt_dir}/data_${bpemode}${nbpe}.json
+fi
 
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
     echo "stage 5: Decoding"
