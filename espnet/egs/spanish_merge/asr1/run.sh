@@ -248,7 +248,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
         # Average ASR models
         if ${use_valbest_average}; then
             recog_model=model.val${n_average}.avg.best
-            opt="--log ${expdir}/results/log"
+            opt="--log"
         else
             recog_model=model.last${n_average}.avg.best
             opt="--log"
