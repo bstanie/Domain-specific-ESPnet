@@ -88,8 +88,7 @@ def prepare_gong_data():
                                         download_folder=raw_data_folder)
     logger.info(f"Dataset location: {dataset_location}")
 
-    transformers = [GongSpanishFirstPass2KaldiTransformer(), GongSpanishSecondPass2KaldiTransformer(),
-                    GongUnsupervisedSpanish2KaldiTransformer()]
+    transformers = [GongSpanishFirstPass2KaldiTransformer()]
     for transformer in transformers:
         logger.info(f"Using class {transformer}")
         transformer.transform(
