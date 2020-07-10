@@ -43,7 +43,7 @@ dataset_mapping = [
     # ('kaggle_120h', None, Kaggle120hSpanish2KaldiTransformer())
 ]
 DATASET_FACTORY = [DataSet(_[0], _[1], _[2]) for _ in dataset_mapping]
-eg_dir = Path('/espnet/egs/spanish_merge/asr1')
+eg_dir = Path('/espnet/egs/spanish_gong/asr1')
 raw_data_folder = Path(eg_dir, 'raw_data')
 
 
