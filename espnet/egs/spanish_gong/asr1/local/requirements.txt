@@ -1,0 +1,7 @@
+tqdm
+pydub
+num2words
+python-dotenv
+scikit-learn
+boto3
+kaggle
