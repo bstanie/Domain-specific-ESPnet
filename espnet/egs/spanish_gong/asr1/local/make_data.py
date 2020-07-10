@@ -50,7 +50,7 @@ raw_data_folder = Path(eg_dir, 'raw_data')
 def get_datasets_from_name(dataset_names):
     dataset_names = set([name.replace("train_", "").replace("test_", "") for name in dataset_names])
     datasets = [dataset for dataset in DATASET_FACTORY if
-                    dataset.name in dataset_names]
+                dataset.name in dataset_names]
     return datasets
 
 
@@ -88,7 +88,8 @@ def prepare_gong_data():
                                         download_folder=raw_data_folder)
     logger.info(f"Dataset location: {dataset_location}")
 
-    transformers = [GongSpanishFirstPass2KaldiTransformer()]
+    transformers = [GongSpanishFirstPass2KaldiTransformer(), GongSpanishSecondPass2KaldiTransformer(),
+                    GongUnsupervisedSpanish2KaldiTransformer()]
     for transformer in transformers:
         logger.info(f"Using class {transformer}")
         transformer.transform(
