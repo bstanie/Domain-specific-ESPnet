@@ -18,7 +18,7 @@ class GongSpanishFirstPass2KaldiTransformer(AbstractDataTransformer):
         super().__init__()
         self._prefix = 'gong_first_pass'
         self.overall_duration = 0
-        self.TESTSET_PROPORTION: float = 0.25
+        self.TESTSET_PROPORTION: float = 0.2
         if SUBSET_SIZE:
             self.SUBSET_SIZE = int(SUBSET_SIZE)
 
