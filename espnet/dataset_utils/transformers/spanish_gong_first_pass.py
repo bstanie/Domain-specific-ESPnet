@@ -12,18 +12,18 @@ SUBSET_SIZE = os.environ.get("ESPNET_SUBSET_SIZE", None)
 logger = logging.root
 
 
-class GongSpanishSecondPass2KaldiTransformer(AbstractDataTransformer):
+class GongSpanishFirstPass2KaldiTransformer(AbstractDataTransformer):
 
     def __init__(self):
         super().__init__()
-        self._prefix = 'gong_second_pass'
+        self._prefix = 'gong_first_pass'
         self.overall_duration = 0
         if SUBSET_SIZE:
             self.SUBSET_SIZE = int(SUBSET_SIZE)
 
     def transform(self, raw_data_path, espnet_kaldi_eg_directory, *args, **kwargs):
         self.kaldi_eg_dir = espnet_kaldi_eg_directory
-        raw_data_path = os.path.join(raw_data_path, 'to-y-data', 'spanish_test_set_second_pass')
+        raw_data_path = os.path.join(raw_data_path, 'to-y-data', 'spanish_test_set_first_pass_only')
         self.kaldi_data_dir = os.path.join(espnet_kaldi_eg_directory, 'data')
         kaldi_audio_files_dir = os.path.join(espnet_kaldi_eg_directory, 'downloads')
 

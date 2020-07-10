@@ -65,12 +65,16 @@ def download_and_extract_data(dataset_urls: List[str], dataset_name: str, downlo
     return pathlib.Path(final_path).absolute()
 
 
-def download_dir(client, resource, bucket, prefix, local_dir):
+def download_dir(client, resource, bucket, prefix, local_dir, exempt_dirs=None):
     paginator = client.get_paginator('list_objects')
     for result in paginator.paginate(Bucket=bucket, Delimiter='/', Prefix=prefix):
         if result.get('CommonPrefixes') is not None:
             for subdir in result.get('CommonPrefixes'):
-                download_dir(client, resource, bucket, subdir.get('Prefix'), local_dir)
+                if exempt_dirs:
+                    if subdir.get('Prefix') not in exempt_dirs:
+                        download_dir(client, resource, bucket, subdir.get('Prefix'), local_dir, exempt_dirs)
+                else:
+                    download_dir(client, resource, bucket, subdir.get('Prefix'), local_dir, exempt_dirs)
         for file in tqdm(result.get('Contents', [])):
             logger.info(f"Downloading data from {prefix}")
             dest_pathname = os.path.join(local_dir, file.get('Key'))
@@ -80,7 +84,7 @@ def download_dir(client, resource, bucket, prefix, local_dir):
                 resource.meta.client.download_file(bucket, file.get('Key'), dest_pathname)
 
 
-def download_from_s3(key, bucket, dataset_name, download_folder):
+def download_from_s3(key, bucket, dataset_name, download_folder, exempt_dirs=None):
     access_key = os.getenv("AWS_GONG_ACCESS_KEY")
     secret_token = os.getenv("AWS_GONG_SECRET")
     client = boto3.client('s3',
@@ -93,7 +97,7 @@ def download_from_s3(key, bucket, dataset_name, download_folder):
         logger.info("Dataset has been already downloaded")
     else:
         logger.info("Getting data from s3")
-        download_dir(client, resource, bucket, key, dataset_dir)
+        download_dir(client, resource, bucket, key, dataset_dir, exempt_dirs)
 
     return pathlib.Path(dataset_dir).absolute()
 
