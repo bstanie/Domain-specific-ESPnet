@@ -5,7 +5,8 @@ from typing import List
 
 from dataset_utils.dataset_downloader import download_and_extract_data, download_from_s3, \
     download_and_extract_data_from_kaggle_datasets
-from dataset_utils.transformers.spanish_gong import GongSpanish2KaldiTransformer
+from dataset_utils.transformers.spanish_gong import GongSpanishSecondPass2KaldiTransformer
+from dataset_utils.transformers.spanish_gong_first_pass import GongSpanishFirstPass2KaldiTransformer
 from dataset_utils.transformers.spanish_gong_unsupervised import GongUnsupervisedSpanish2KaldiTransformer
 from dataset_utils.transformers.spanish_kaggle_120h import Kaggle120hSpanish2KaldiTransformer
 from dataset_utils.transformers.spanish_mailabs import MailabsKaldiTransformer
@@ -42,14 +43,14 @@ dataset_mapping = [
     # ('kaggle_120h', None, Kaggle120hSpanish2KaldiTransformer())
 ]
 DATASET_FACTORY = [DataSet(_[0], _[1], _[2]) for _ in dataset_mapping]
-eg_dir = Path('/espnet/egs/spanish_merge/asr1')
+eg_dir = Path('/espnet/egs/spanish_gong/asr1')
 raw_data_folder = Path(eg_dir, 'raw_data')
 
 
 def get_datasets_from_name(dataset_names):
     dataset_names = set([name.replace("train_", "").replace("test_", "") for name in dataset_names])
     datasets = [dataset for dataset in DATASET_FACTORY if
-                    dataset.name in dataset_names]
+                dataset.name in dataset_names]
     return datasets
 
 
@@ -87,7 +88,8 @@ def prepare_gong_data():
                                         download_folder=raw_data_folder)
     logger.info(f"Dataset location: {dataset_location}")
 
-    transformers = [GongSpanish2KaldiTransformer(), GongUnsupervisedSpanish2KaldiTransformer()]
+    transformers = [GongSpanishFirstPass2KaldiTransformer(), GongSpanishSecondPass2KaldiTransformer(),
+                    GongUnsupervisedSpanish2KaldiTransformer()]
     for transformer in transformers:
         logger.info(f"Using class {transformer}")
         transformer.transform(
